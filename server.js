@@ -1,15 +1,35 @@
-'use strict';
-const express = require('express');
-const pg = require("pg");
-const app = express();
-app.use = (express.json());
-const axios = require('axios');
-const dotenv = require("dotenv");
-dotenv.config();
-const API_KEY = process.env.API_KEY;
-const PORT = process.env.PORT ||3001;
-const client = new pg.Client(process.env.DATABASE_URL);
+// 'use strict';
+// const express = require('express');
+// const pg = require("pg");
+// const app = express();
 
+// const axios = require('axios');
+// const dotenv = require("dotenv");
+// dotenv.config();
+// const API_KEY = process.env.API_KEY;
+// const PORT = process.env.PORT ||3001;
+
+// app.use = (express.json());
+
+'use strict';
+
+const express = require('express');
+const app = express();
+const dotenv = require('dotenv');
+const axios = require("axios");
+const pg = require("pg");
+// const { Client } = require('pg/lib');
+const client = new pg.Client(process.env.DATABASE_URL);
+dotenv.config();
+const DATABASE_URL = process.env.DATABASE_URL;
+// const client = new pg.Client(DATABASE_URL);
+// const client = new pg.Client({
+//     connectionString: process.env.DATABASE_URL,
+//     ssl: { rejectUnauthorized: false }
+// });
+app.use(express.json());
+const PORT = process.env.PORT;
+const API_KEY = process.env.API_KEY;
 
 
 app.get('/trending',trendingHandler);
@@ -31,7 +51,7 @@ function Movies(id, title, release_date, poster_path, overview) {
 
   
 // app.use(errorNotfoundHandler);
-app.use(errorHandler);
+// app.use(errorHandler);
   
   function trendingHandler(req,res){
     //req:  http://localhost:3000/trending
@@ -110,25 +130,31 @@ function errorHandler (error,req, res) {
 
 function addMovieHandler(req,res){
   let movie = req.body;
+ 
 const sql = `INSERT INTO favMovies(title, release_date, poster_path, overview)values($1,$2,$3,$4)RETURNING * ;`
 let values = [movie.title, movie.release_date,movie.poster_path, movie.overview];
 client.query(sql,values).then((data) =>{
-
+console.log(data.rows);
 return res.status(201).json(data.rows);
 }) .catch((error) => {
-  errorHandler(error,req,res);
+  console.log(error);
+  // errorHandler(error,req,res);
+
   });
 
 }
 
-// function getFavHandler(req,res){
-//   const sql = `SELECT * FROM favMovies`;
-//   client.query(sql).then((data)=> {
-// return res.status(200).json(data.rows);
-//   }).catch((error) => {
-//     errorHandler(error,req,res);
-//     });
-// }
+function getFavHandler(req,res){
+  // path : http://localhost:3000/getMovie
+  const sql = `SELECT * FROM favMovies`;
+ client.query(sql).then((data)=> {
+  console.log(data);
+return res.status(200).json(data.rows);
+
+}).catch((error) => {
+  errorHandler(error,req,res);
+  });
+ }
 
 
 
