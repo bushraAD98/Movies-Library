@@ -18,6 +18,7 @@ app.get("/search", searchHandler);
 
 app.post("/addMovie" , addMovieHandler);
 app.get("/getMovie",getFavHandler);
+app.get("/get",getFavHandler);
 
 function Movies(id, title, release_date, poster_path, overview) {
     this.id = id;
@@ -99,6 +100,12 @@ function errorHandler (error,req, res) {
 // function errorNotfoundHandler(req, res) {
 //   res.status(404).send("there is no endpoint with this name");
 // }
+
+
+
+
+
+
 
 
 function addMovieHandler(req,res){
