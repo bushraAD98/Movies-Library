@@ -18,7 +18,7 @@ app.get("/search", searchHandler);
 
 app.post("/addMovie" , addMovieHandler);
 app.get("/getMovie",getFavHandler);
-app.get("/get",getFavHandler);
+// app.get("/get",getFavHandler);
 
 function Movies(id, title, release_date, poster_path, overview) {
     this.id = id;
@@ -121,14 +121,14 @@ return res.status(201).json(data.rows);
 
 }
 
-function getFavHandler(req,res){
-  const sql = `SELECT * FROM favMovies`;
-  client.query(sql).then((data)=> {
-return res.status(200).json(data.rows);
-  }).catch((error) => {
-    errorHandler(error,req,res);
-    });
-}
+// function getFavHandler(req,res){
+//   const sql = `SELECT * FROM favMovies`;
+//   client.query(sql).then((data)=> {
+// return res.status(200).json(data.rows);
+//   }).catch((error) => {
+//     errorHandler(error,req,res);
+//     });
+// }
 
 client.connect().then(()=>{
   app.listen (PORT, () => {
