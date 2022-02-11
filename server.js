@@ -20,7 +20,7 @@ const axios = require("axios");
 const pg = require("pg");
 // const { Client } = require('pg/lib');
 
-const client = new Client ({
+const client = new pg.Client({
   connectionString : process.env.DATABASE_URL,
   ssl : { rejectUnauthorized : false}
   });
