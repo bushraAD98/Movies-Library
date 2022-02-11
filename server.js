@@ -38,7 +38,10 @@ app.get("/search", searchHandler);
 
 app.post("/addMovie" , addMovieHandler);
 app.get("/getMovie",getFavHandler);
-// app.get("/get",getFavHandler);
+//task14 Endpoints:
+app.put("/updateFavMovie/:id",updateFavMovie);
+app.delete("/deleteFavMovie/:id",deleteFavMovie);
+app.get("/getFavHandlerId/:id",getFavHandlerId);
 
 function Movies(id, title, release_date, poster_path, overview) {
     this.id = id;
@@ -145,7 +148,7 @@ return res.status(201).json(data.rows);
 }
 
 function getFavHandler(req,res){
-  // path : http://localhost:3000/getMovie
+  // path : 
   const sql = `SELECT * FROM favMovies`;
  client.query(sql).then((data)=> {
   console.log(data);
@@ -156,6 +159,46 @@ return res.status(200).json(data.rows);
   });
  }
 
+function updateFavMovie(req,res){
+  // http:localhost:3000/updateFavMovie/:id
+
+const id = req.params.id;
+const movie = req.body;
+const sql = `UPDATE favMovies set title=$1 , release_date=$2 ,poster_path=$3 , overview=$4 WHERE id=${id} RETURNING * ;` ;
+const values = [movie.title , movie.release_date,movie.poster_path,movie.overview];
+client.query(sql,values).then((data)=> {
+return res.status(200).json(data.rows); 
+}).catch((error)=> {
+console.log(error);
+});
+
+}
+
+function deleteFavMovie(req,res){
+ // http:localhost:3000/deleteFavMovie/:id
+ const id = req.params.id;
+ const sql = `DELETE FROM favMovies WHERE id=${id} ;`;
+ client.query(sql).then(()=> {
+return res.status(204).json({});
+ }).catch((error)=> {
+console.log(error);
+ });
+
+}
+
+
+function getFavHandlerId(req,res){
+  // path : http://localhost:3000/getFavHandlerId/:id
+  const id = req.params.id ;
+  const sql = `SELECT * FROM favMovies WHERE id=${id} ;`;
+ client.query(sql).then((data)=> {
+  console.log(data);
+return res.status(200).json(data.rows);
+
+}).catch((error) => {
+  errorHandler(error,req,res);
+  });
+ }
 
 
 client.connect().then(()=>{
